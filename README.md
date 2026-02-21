@@ -52,3 +52,6 @@ Join our community of developers creating universal apps.
 # Native Wind CSS
 
 - [Guide](https://www.nativewind.dev/docs/getting-started/installation)
+
+npm install zustand
+npm i expo-secure-store
