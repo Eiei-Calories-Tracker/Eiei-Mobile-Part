@@ -6,6 +6,9 @@ import "../../global.css";
 import SaveAreaScreen from "../components/SaveAreaScreen";
 import { useAuthStore } from "../utils/authStore";
 
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import "@/global.css";
+
 const isWeb = Platform.OS === "web";
 
 if (!isWeb) {
@@ -33,27 +36,29 @@ export default function RootLayout() {
   }
 
   return (
-    <React.Fragment>
-      <StatusBar style="auto" />
-      <SaveAreaScreen>
-        <Stack>
-          <Stack.Protected guard={isLoggedIn}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            {/* modal will access if isLoggedIn */}
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack.Protected>
-          <Stack.Protected guard={!isLoggedIn}>
-            {/*  && hasCompletedOnboarding */}
-            <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-            <Stack.Protected guard={shouldCreateAccount}>
-              <Stack.Screen name="create-account" />
+    <GluestackUIProvider>
+      <React.Fragment>
+        <StatusBar style="auto" />
+        <SaveAreaScreen>
+          <Stack>
+            <Stack.Protected guard={isLoggedIn}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              {/* modal will access if isLoggedIn */}
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
             </Stack.Protected>
-          </Stack.Protected>
-          {/* <Stack.Protected guard={!hasCompletedOnboarding}>
+            <Stack.Protected guard={!isLoggedIn}>
+              {/*  && hasCompletedOnboarding */}
+              <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+              <Stack.Protected guard={shouldCreateAccount}>
+                <Stack.Screen name="create-account" />
+              </Stack.Protected>
+            </Stack.Protected>
+            {/* <Stack.Protected guard={!hasCompletedOnboarding}>
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         </Stack.Protected> */}
-        </Stack>
-      </SaveAreaScreen>
-    </React.Fragment>
+          </Stack>
+        </SaveAreaScreen>
+      </React.Fragment>
+    </GluestackUIProvider>
   );
 }

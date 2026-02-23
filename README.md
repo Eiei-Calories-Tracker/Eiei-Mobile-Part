@@ -55,3 +55,4 @@ Join our community of developers creating universal apps.
 
 npm install zustand
 npm i expo-secure-store
+npm install react-native-dotenv
