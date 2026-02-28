@@ -6,7 +6,7 @@ import { Button, View } from "react-native";
 
 export default function IndexScreen() {
   useEffect(() => {
-    const res = USER_API.getUserById("699be4d8b239af2ba5c479de");
+    const res = USER_API.getUserById("1");
     console.log(res);
   }, []);
   return (

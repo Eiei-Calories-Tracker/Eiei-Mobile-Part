@@ -1,10 +1,10 @@
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
 export const USER_API = {
-  getUserById: async (id: string) => {
+  getUserById: async (id: number) => {
     try {
-      const response = await fetch(`${BASE_URL}/users/${id}`);
-      console.log("URL:", `${BASE_URL}/users/${id}`);
+      const response = await fetch(`${BASE_URL}/students/${id}`);
+      console.log("URL:", `${BASE_URL}/students/${id}`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch user");
