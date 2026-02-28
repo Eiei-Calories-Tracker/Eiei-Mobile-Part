@@ -50,7 +50,10 @@ export default function RootLayout() {
               {/*  && hasCompletedOnboarding */}
               <Stack.Screen name="sign-in" options={{ headerShown: false }} />
               <Stack.Protected guard={shouldCreateAccount}>
-                <Stack.Screen name="create-account" />
+                <Stack.Screen
+                  name="create-account"
+                  options={{ headerShown: false }}
+                />
               </Stack.Protected>
             </Stack.Protected>
             {/* <Stack.Protected guard={!hasCompletedOnboarding}>

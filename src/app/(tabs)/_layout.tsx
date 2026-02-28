@@ -2,8 +2,6 @@ import { useAuthStore } from "@/src/utils/authStore";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
-  const { isVip } = useAuthStore();
-
   return (
     <Tabs>
       <Tabs.Screen name="index" />

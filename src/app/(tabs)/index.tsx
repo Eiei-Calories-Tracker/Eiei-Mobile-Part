@@ -1,14 +1,18 @@
 import { AppText } from "@/src/components/AppText";
 import { USER_API } from "@/src/services/userService";
+import { useAuthStore } from "@/src/utils/authStore";
 import { Link } from "expo-router";
 import { useEffect } from "react";
 import { Button, View } from "react-native";
 
 export default function IndexScreen() {
   useEffect(() => {
-    const res = USER_API.getUserById("1");
+    const res = USER_API.getUserById(1);
     console.log(res);
   }, []);
+
+  const { userId, accessToken } = useAuthStore();
+  console.log("userId", userId, accessToken);
   return (
     <View className="justify-center flex-1 p-4">
       <AppText center size="heading">
