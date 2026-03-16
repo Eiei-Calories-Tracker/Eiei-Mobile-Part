@@ -238,7 +238,7 @@ export default function IndexScreen() {
               <LeafIcon />
             </CircularProgress>
             <View style={{ alignItems: "center" }}>
-              <Text style={[style.nutrient, , { fontSize: 18 }]}>
+              <Text style={[style.nutrient, { fontSize: 18 }]}>
                 {nutrient.carb}
               </Text>
               <Text style={style.nutrient}>/{limitNutrient.carb} gram</Text>
