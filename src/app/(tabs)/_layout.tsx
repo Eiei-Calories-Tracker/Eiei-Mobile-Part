@@ -1,6 +1,8 @@
-import { Tabs } from "expo-router";
+import { router, Tabs, usePathname } from "expo-router";
 import { useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import HomeIcon from "../components/HomeIcon";
+import UserIcon from "../components/UserIcon";
 
 const style = StyleSheet.create({
   CreateButton: {
@@ -15,21 +17,46 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  label: {
+    fontSize: 8,
+  },
 });
 
 export default function TabsLayout() {
   const [open, setOpen] = useState(false);
-
+  const pathname = usePathname();
   return (
     <>
       <Tabs
         screenOptions={{
+          headerShown: false,
           tabBarStyle: {
             maxHeight: 90,
           },
         }}
       >
-        <Tabs.Screen name="index" />
+        <Tabs.Screen
+          name="index"
+          options={{
+            tabBarButton: () => (
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => router.push("/")}
+                style={{ alignItems: "center", flex: 1, marginTop: 10 }}
+              >
+                <HomeIcon color={pathname === "/" ? "#53B175" : "black"} />
+                <Text
+                  style={[
+                    style.label,
+                    { color: pathname === "/" ? "#53B175" : "black" },
+                  ]}
+                >
+                  Home
+                </Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
 
         <Tabs.Screen
           name="create"
@@ -37,6 +64,7 @@ export default function TabsLayout() {
             tabBarButton: () => (
               <View style={{ alignItems: "center", flex: 1 }}>
                 <TouchableOpacity
+                  activeOpacity={1}
                   onPress={() => setOpen(true)}
                   style={style.CreateButton}
                 >
@@ -58,20 +86,44 @@ export default function TabsLayout() {
           }}
         />
 
-        <Tabs.Screen name="setting" />
+        <Tabs.Screen
+          name="setting"
+          options={{
+            tabBarButton: () => (
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => router.push("/setting")}
+                style={{ alignItems: "center", flex: 1, marginTop: 10 }}
+              >
+                <UserIcon
+                  color={pathname === "/setting" ? "#53B175" : "black"}
+                />
+                <Text
+                  style={[
+                    style.label,
+                    { color: pathname === "/setting" ? "#53B175" : "black" },
+                  ]}
+                >
+                  Setting
+                </Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
       </Tabs>
 
-      <Modal visible={open} transparent animationType="slide">
+      <Modal visible={open} transparent animationType="fade">
         <TouchableOpacity
           style={{
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
             // backgroundColor: "red",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
           }}
           onPress={() => setOpen(false)}
         >
-          <View
+          <TouchableOpacity
             style={{
               width: "100%",
               height: 200,
@@ -80,6 +132,7 @@ export default function TabsLayout() {
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
+              boxShadow: "0 2.5px 10px gray",
             }}
           >
             <TouchableOpacity
@@ -106,7 +159,7 @@ export default function TabsLayout() {
             >
               <Text>Custom</Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
     </>
