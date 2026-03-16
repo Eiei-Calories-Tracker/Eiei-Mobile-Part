@@ -53,7 +53,7 @@ const style = StyleSheet.create({
   current: {
     color: "#EFEB33",
   },
-  nutrient: { textAlign: "center", fontSize: 12, fontWeight: "bold" },
+  nutrient: { textAlign: "center", fontSize: 11, fontWeight: "bold" },
 });
 export default function IndexScreen() {
   useEffect(() => {
@@ -81,14 +81,7 @@ export default function IndexScreen() {
   const [currentDatePick, setCurrentDatePick] = useState(4);
   useEffect(() => {
     if (!userId) return;
-    const loadWeek = async () => {
-      const now = new Date();
-      const data = await NUTRIENT_API.fetchWeekNutrient(userId, now);
-
-      setWeekData(data);
-    };
-
-    loadWeek();
+    onSubmit(new Date());
   }, [userId]);
   useEffect(() => {
     if (weekData.length === 0) return;
@@ -208,8 +201,10 @@ export default function IndexScreen() {
               <FoodIcon />
             </CircularProgress>
             <View style={{ alignItems: "center" }}>
-              <Text style={style.nutrient}>{nutrient.protein}</Text>
-              <Text style={style.nutrient}>/{limitNutrient.protein}</Text>
+              <Text style={[style.nutrient, { fontSize: 18 }]}>
+                {nutrient.protein}
+              </Text>
+              <Text style={style.nutrient}>/{limitNutrient.protein} gram</Text>
             </View>
           </View>
           <View
@@ -228,8 +223,10 @@ export default function IndexScreen() {
               <BoxIcon />
             </CircularProgress>
             <View style={{ alignItems: "center" }}>
-              <Text style={style.nutrient}>{nutrient.fat}</Text>
-              <Text style={style.nutrient}>/{limitNutrient.fat}</Text>
+              <Text style={[style.nutrient, { fontSize: 18 }]}>
+                {nutrient.fat}
+              </Text>
+              <Text style={style.nutrient}>/{limitNutrient.fat} gram</Text>
             </View>
           </View>
           <View style={{ position: "absolute", top: "78%", right: "15%" }}>
@@ -241,8 +238,10 @@ export default function IndexScreen() {
               <LeafIcon />
             </CircularProgress>
             <View style={{ alignItems: "center" }}>
-              <Text style={style.nutrient}>{nutrient.carb}</Text>
-              <Text style={style.nutrient}>/{limitNutrient.carb}</Text>
+              <Text style={[style.nutrient, , { fontSize: 18 }]}>
+                {nutrient.carb}
+              </Text>
+              <Text style={style.nutrient}>/{limitNutrient.carb} gram</Text>
             </View>
           </View>
         </View>
