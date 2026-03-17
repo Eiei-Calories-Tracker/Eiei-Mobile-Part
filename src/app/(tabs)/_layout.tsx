@@ -144,6 +144,7 @@ export default function TabsLayout() {
                 alignItems: "center",
                 justifyContent: "center",
               }}
+              onPress={() => router.push("/createFoodRecord")}
             >
               <Text>Scan Food</Text>
             </TouchableOpacity>

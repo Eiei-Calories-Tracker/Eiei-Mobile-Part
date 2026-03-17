@@ -43,8 +43,16 @@ export default function RootLayout() {
           <Stack>
             <Stack.Protected guard={isLoggedIn}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="createFoodRecord"
+                options={{ headerShown: false }}
+              />
               {/* modal will access if isLoggedIn */}
               <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+              <Stack.Screen
+                name="cameraFunction"
+                options={{ headerShown: false }}
+              />
             </Stack.Protected>
             <Stack.Protected guard={!isLoggedIn}>
               {/*  && hasCompletedOnboarding */}
