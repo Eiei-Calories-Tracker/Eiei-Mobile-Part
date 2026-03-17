@@ -8,29 +8,41 @@ import { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useCameraStore } from "../../utils/cameraStore";
+import { FOODRECORD_API } from "@/src/services/foodrecordService";
+import { useAuthStore } from "@/src/utils/authStore";
+import { UploadImage } from "@/interface";
 
 export default function FoodRecordPanel() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const { capturedImage, clearCapturedImage } = useCameraStore();
-
   const [image, setImage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<any | null>(null);
+  const [imageFile, setImageFile] = useState<UploadImage | null>(null);
+  const { accessToken } = useAuthStore();
+
+  async function handlePostFoodName(imageFile: UploadImage) {
+    const res = await FOODRECORD_API.postFoodName(
+      { file: imageFile },
+      accessToken!,
+    );
+  }
 
   useEffect(() => {
     if (capturedImage) {
       setImage(capturedImage.uri);
-      const fileName = capturedImage.uri.split("/").pop();
-      const fileType = fileName?.split(".").pop();
-      setImageFile({
+      const fileName = capturedImage.uri.split("/").pop() || "image.jpg";
+      const fileType = fileName.split(".").pop() || "jpg";
+      const image = {
         uri: capturedImage.uri,
         name: fileName,
         type: `image/${fileType}`,
-      });
+      };
+      setImageFile(image);
       clearCapturedImage();
+      handlePostFoodName(image);
     }
   }, [capturedImage]);
-
+  console.log(accessToken);
   const pickImage = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -53,11 +65,13 @@ export default function FoodRecordPanel() {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       const asset = result.assets[0];
-      setImageFile({
+      const image = {
         uri: asset.uri,
-        name: asset.fileName || asset.uri.split("/").pop(),
-        type: asset.mimeType || `image/${asset.uri.split(".").pop()}`,
-      });
+        name: asset.fileName || asset.uri.split("/").pop() || "image.jpg",
+        type: asset.mimeType || `image/${asset.uri.split(".").pop() || "jpg"}`,
+      };
+      setImageFile(image);
+      handlePostFoodName(image);
     }
   };
 

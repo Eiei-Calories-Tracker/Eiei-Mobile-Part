@@ -1,11 +1,24 @@
+import { FoodNameRequest } from "@/interface";
+
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+
 export const FOODRECORD_API = {
-  fetchTargetDateFoodRecord: async (date: Date, userId: string) => {
+  postFoodName: async (imageFile: FoodNameRequest, accessToken: string) => {
     try {
-      const stringDate = date.toLocaleDateString("en-CA");
-      const res = await fetch(
-        `${BASE_URL}/api/v1/foodrecord/${userId}/${stringDate}`,
-      );
+      const formData = new FormData();
+      formData.append("image", imageFile.file as any);
+      console.log("formData", imageFile.file);
+      const res = await fetch(`${BASE_URL}/api/v1/food_name`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+      console.log("res", await res.json());
+      if (!res.ok) {
+        throw new Error("Failed to get food name");
+      }
 
       return await res.json();
     } catch (err) {

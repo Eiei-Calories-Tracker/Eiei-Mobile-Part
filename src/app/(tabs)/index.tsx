@@ -73,7 +73,6 @@ const style = StyleSheet.create({
 export default function IndexScreen() {
   useEffect(() => {
     const res = USER_API.getUserById(1);
-    console.log(res);
   }, []);
   const { userId, accessToken, setUserData, userData } = useAuthStore();
   // console.log("userId", userId, accessToken);

@@ -71,6 +71,7 @@ export default function CameraFunction() {
     let savePhoto = async () => {
       setCapturedImage({ uri: photo.uri, base64: photo.base64 });
       setPhoto(undefined);
+
       router.back();
     };
 
