@@ -1,9 +1,12 @@
-import { FoodNameRequest } from "@/interface";
+import { FoodNameRequest, FoodNameResponse } from "@/interface";
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
 export const FOODRECORD_API = {
-  postFoodName: async (imageFile: FoodNameRequest, accessToken: string) => {
+  postFoodName: async (
+    imageFile: FoodNameRequest,
+    accessToken: string,
+  ): Promise<FoodNameResponse> => {
     try {
       const formData = new FormData();
       formData.append("image", imageFile.file as any);
@@ -15,14 +18,14 @@ export const FOODRECORD_API = {
         },
         body: formData,
       });
-      console.log("res", await res.json());
       if (!res.ok) {
         throw new Error("Failed to get food name");
       }
-
-      return await res.json();
+      const response = await res.json();
+      return response.data;
     } catch (err) {
       console.log(err);
+      throw err;
     }
   },
 };

@@ -7,10 +7,13 @@ import { VStack } from "@/components/ui/vstack";
 import { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useCameraStore } from "../../utils/cameraStore";
+import { useCameraStore } from "@/src/utils/cameraStore";
 import { FOODRECORD_API } from "@/src/services/foodrecordService";
 import { useAuthStore } from "@/src/utils/authStore";
 import { UploadImage } from "@/interface";
+import { useForm } from "react-hook-form";
+import FoodRecordForm from "./FoodRecordForm";
+import { Button } from "@/components/ui/button";
 
 export default function FoodRecordPanel() {
   const [open, setOpen] = useState(false);
@@ -19,12 +22,39 @@ export default function FoodRecordPanel() {
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<UploadImage | null>(null);
   const { accessToken } = useAuthStore();
+  const [isUserEditing, setisUserEditing] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      food_id: null,
+      quanity: 1,
+      eating_time: null,
+      food_name: "",
+      nutrients: {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+      },
+    },
+  });
 
   async function handlePostFoodName(imageFile: UploadImage) {
     const res = await FOODRECORD_API.postFoodName(
       { file: imageFile },
       accessToken!,
     );
+    console.log("res", res);
+    setValue("food_name", res.food_name, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   }
 
   useEffect(() => {
@@ -42,7 +72,7 @@ export default function FoodRecordPanel() {
       handlePostFoodName(image);
     }
   }, [capturedImage]);
-  console.log(accessToken);
+
   const pickImage = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -82,7 +112,7 @@ export default function FoodRecordPanel() {
       className="bg-slate-400 w-full h-[90%] p-4 "
     >
       <VStack className="w-full h-[40%]">
-        <Box className="flex items-center justify-center  p-2 h-[90%]">
+        <Box className="flex items-center justify-center p-2 h-[90%]">
           <TouchableOpacity
             className="h-full w-full"
             onPress={() => setOpen(true)}
@@ -97,7 +127,7 @@ export default function FoodRecordPanel() {
               />
             ) : (
               <Image
-                source={require("../../../assets/images/upload-image.png")}
+                source={require("../../assets/images/upload-image.png")}
                 alt="image"
                 size="none"
                 className="h-full w-full"
@@ -106,7 +136,19 @@ export default function FoodRecordPanel() {
             )}
           </TouchableOpacity>
         </Box>
+        <Box className="flex h-[100%] mt-3">
+          <FoodRecordForm
+            control={control}
+            errors={errors}
+            watch={watch}
+            isUserEditing={isUserEditing}
+            setisUserEditing={setisUserEditing}
+            setValue={setValue}
+            handleSubmit={handleSubmit}
+          />
+        </Box>
       </VStack>
+
       <Modal visible={open} transparent animationType="fade">
         <TouchableOpacity
           style={{
