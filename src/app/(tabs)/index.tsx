@@ -15,15 +15,29 @@ import {
 
 import { CalendarModal } from "./components/CalendarModal";
 
+import { FOODRECORD_API } from "@/src/services/foodrecordService";
 import BoxIcon from "../components/BoxIcon";
 import FoodIcon from "../components/FoodIcon";
 import LeafIcon from "../components/LeafIcon";
+import { ListFoodRecord } from "./components/ListFoodRecord";
 import { RangeWeekDay } from "./components/RangeWeekDay";
 type NutritionType = {
   calories: number;
   carb: number;
   fat: number;
   protein: number;
+};
+export type FoodRecordType = {
+  food_name: string;
+  sum_fat: number;
+  sum_calories: number;
+  user_id: number;
+  image_key: string;
+  id: number;
+  sum_carb: number;
+  sum_protein: number;
+  quantity: number;
+  eating_time: string;
 };
 export type WeekNutritionType = {
   cummulative_week_nutrients: NutritionType;
@@ -35,6 +49,7 @@ export type WeekNutritionType = {
   day_state: number;
   day: string;
 };
+
 const style = StyleSheet.create({
   bold: {
     fontWeight: "bold",
@@ -62,9 +77,9 @@ export default function IndexScreen() {
   }, []);
   const { userId, accessToken } = useAuthStore();
   // console.log("userId", userId, accessToken);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [showCalendar, setShowCalendar] = useState(false);
-
+  const [foodList, setFoodList] = useState<FoodRecordType[]>([]);
   const [weekData, setWeekData] = useState<WeekNutritionType[]>([]);
   const [nutrient, setNutrient] = useState<NutritionType>({
     calories: 0,
@@ -78,13 +93,26 @@ export default function IndexScreen() {
     carb: 0,
     protein: 0,
   });
-  const [currentDatePick, setCurrentDatePick] = useState(4);
+  const [currentDatePick, setCurrentDatePick] = useState(-1);
+  async function getFoodRecordDate(date: Date) {
+    if (!userId) return;
+    setLoading(true);
+    const res = await FOODRECORD_API.fetchTargetDateFoodRecord(date, userId);
+    setFoodList(res);
+    setLoading(false);
+  }
   useEffect(() => {
     if (!userId) return;
     onSubmit(new Date());
   }, [userId]);
+
   useEffect(() => {
     if (weekData.length === 0) return;
+    if (!userId) return;
+    if (currentDatePick === -1) return;
+
+    const localDate = new Date(weekData[currentDatePick].current_date);
+    getFoodRecordDate(localDate);
     setNutrient(weekData[currentDatePick].cummulative_current_day_nutrients);
     setLimitNutrient(weekData[currentDatePick].target_current_day_nutrients);
   }, [currentDatePick, weekData]);
@@ -102,41 +130,6 @@ export default function IndexScreen() {
 
     setWeekData(data);
   }
-
-  const foodItemExample: { foodName: string; image: string | null }[][] = [
-    // Sun
-    [
-      { foodName: "Chicken Rice", image: null },
-      { foodName: "Boiled Egg", image: null },
-    ],
-
-    // Mon
-    [{ foodName: "Pad Thai", image: null }],
-
-    // Tue
-    [
-      { foodName: "Grilled Salmon", image: null },
-      { foodName: "Salad", image: null },
-    ],
-
-    // Wed
-    [{ foodName: "Burger", image: null }],
-
-    // Thu
-    [
-      { foodName: "Steak", image: null },
-      { foodName: "Mashed Potato", image: null },
-    ],
-
-    // Fri
-    [{ foodName: "Pizza", image: null }],
-
-    // Sat
-    [
-      { foodName: "Sushi", image: null },
-      { foodName: "Miso Soup", image: null },
-    ],
-  ];
 
   return (
     <ScrollView style={{ width: "100%" }}>
@@ -245,15 +238,6 @@ export default function IndexScreen() {
             </View>
           </View>
         </View>
-
-        {/* <View
-        style={{
-          width: "80%",
-          marginInline: "auto",
-          height: 200,
-          backgroundColor: "white",
-        }}
-      ></View> */}
       </View>
       <View
         style={{
@@ -261,11 +245,13 @@ export default function IndexScreen() {
           backgroundColor: "white",
           width: "80%",
           alignSelf: "center",
-          height: 300,
+          height: 350,
+          // minHeight: 200,
           padding: 20,
           borderRadius: 30,
           marginBottom: 100,
           boxShadow: "0 2.5px 10px gray",
+          overflow: "hidden",
         }}
       >
         <View style={{ paddingBlock: 10 }}>
@@ -297,21 +283,18 @@ export default function IndexScreen() {
           setCurrentDatePick={setCurrentDatePick}
         />
         {/* Needed New Component (Move with State) */}
-        <View style={{ marginTop: 10, gap: 10 }}>
-          {foodItemExample[currentDatePick].map((item, index) => (
-            <View
-              key={index}
-              style={{
-                padding: 15,
-                width: "100%",
-                backgroundColor: "#753535",
-                borderRadius: 20,
-              }}
-            >
-              <Text style={{ color: "white" }}>{item.foodName}</Text>
-            </View>
-          ))}
-        </View>
+        <ListFoodRecord foodList={foodList} loading={loading} />
+        {!loading && foodList.length === 0 && (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: 200,
+            }}
+          >
+            <Text>No Food Record Today</Text>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
