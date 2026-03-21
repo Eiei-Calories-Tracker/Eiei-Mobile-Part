@@ -46,6 +46,7 @@ export default function FoodRecordPanel() {
     handleSubmit,
     setValue,
     watch,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -120,7 +121,6 @@ export default function FoodRecordPanel() {
   const onSavePress = async (data: any) => {
     setIsLoading(true);
     try {
-      console.log("data", data);
       const res = await FOODRECORD_API.postFoodRecord(
         {
           is_user_create: data.food_id == -1 ? "1" : "0",
@@ -257,6 +257,7 @@ export default function FoodRecordPanel() {
             isDisabledServing={isDisabledServing}
             setIsDisabledServing={setIsDisabledServing}
             onSavePress={onSavePress}
+            setError={setError}
           />
         </Box>
       </VStack>

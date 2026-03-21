@@ -35,6 +35,7 @@ export default function FoodRecordForm({
   isDisabledServing,
   setIsDisabledServing,
   onSavePress,
+  setError,
 }: {
   control: Control<any>;
   errors: FieldErrors<any>;
@@ -49,6 +50,7 @@ export default function FoodRecordForm({
   isDisabledServing: boolean;
   setIsDisabledServing: (isDisabledServing: boolean) => void;
   onSavePress: (data: any) => void;
+  setError: any;
 }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -101,7 +103,13 @@ export default function FoodRecordForm({
       setisUserEditing(true);
     } else {
       //finish editing
-
+      if (foodName == "") {
+        setError("food_name", {
+          type: "required",
+          message: "Food name is required",
+        });
+        return;
+      }
       setCustomFood({
         food_id: -1,
         food_name: foodName,
@@ -193,6 +201,7 @@ export default function FoodRecordForm({
           <Controller
             control={control}
             name="food_name"
+            rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input variant="outline" className="rounded-xl w-[70%]">
                 <InputField
@@ -212,6 +221,7 @@ export default function FoodRecordForm({
           <Text className="w-[70%]">{foodName}</Text>
         </Box>
       )}
+
       {/* Quantity Section */}
       <FormControl
         className="flex flex-row h-16 items-center mb-5"
@@ -226,6 +236,7 @@ export default function FoodRecordForm({
           <Controller
             control={control}
             name="quantity"
+            rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 variant="outline"
@@ -286,6 +297,7 @@ export default function FoodRecordForm({
                 <Controller
                   control={control}
                   name="nutrients.protein"
+                  rules={{ required: true, min: 0.001 }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       variant="outline"
@@ -330,6 +342,7 @@ export default function FoodRecordForm({
                 <Controller
                   control={control}
                   name="nutrients.fat"
+                  rules={{ required: true, min: 0.001 }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       variant="outline"
@@ -374,6 +387,7 @@ export default function FoodRecordForm({
                 <Controller
                   control={control}
                   name="nutrients.carb"
+                  rules={{ required: true, min: 0.001 }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       variant="outline"
