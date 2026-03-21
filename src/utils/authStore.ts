@@ -5,42 +5,50 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 const isWeb = Platform.OS === "web";
 
+type UserData = {
+  activity_factor: string;
+  birth_date: string;
+  email: string;
+  first_name: string;
+  gender: string;
+  height: number;
+  last_name: string;
+  target: string;
+  weight: number;
+};
+
 type UserState = {
   isLoggedIn: boolean;
+  accessToken: string | null;
+  userId: string | null;
   shouldCreateAccount: boolean;
   hasCompletedOnboarding: boolean;
-  isVip: boolean;
   _hasHydrated: boolean;
-  logIn: () => void;
+  userData: UserData | null;
+  logIn: (token: string, userId: string) => void;
   logOut: () => void;
-  completeOnboarding: () => void;
-  resetOnboarding: () => void;
-  logInAsVip: () => void;
+  setShouldCreateAccount: (value: boolean) => void;
   setHasHydrated: (value: boolean) => void;
+  setUserData: (data: UserData) => void;
 };
 
 export const useAuthStore = create(
   persist<UserState>(
     (set) => ({
       isLoggedIn: false,
+      accessToken: null,
+      userId: null,
+      userData: null,
       shouldCreateAccount: false,
       hasCompletedOnboarding: false,
-      isVip: false,
       _hasHydrated: false,
-      logIn: () => {
+      logIn: (token: string, userId: string) => {
         set((state) => {
           return {
             ...state,
             isLoggedIn: true,
-          };
-        });
-      },
-      logInAsVip: () => {
-        set((state) => {
-          return {
-            ...state,
-            isVip: true,
-            isLoggedIn: true,
+            accessToken: token,
+            userId: userId,
           };
         });
       },
@@ -48,26 +56,21 @@ export const useAuthStore = create(
         set((state) => {
           return {
             ...state,
-            isVip: false,
             isLoggedIn: false,
+            accessToken: null,
+            userId: null,
+            userData: null,
           };
         });
       },
-      completeOnboarding: () => {
-        set((state) => {
-          return {
-            ...state,
-            hasCompletedOnboarding: true,
-          };
-        });
+      setUserData: (data: UserData) => {
+        set((state) => ({
+          ...state,
+          userData: data,
+        }));
       },
-      resetOnboarding: () => {
-        set((state) => {
-          return {
-            ...state,
-            hasCompletedOnboarding: false,
-          };
-        });
+      setShouldCreateAccount: (value: boolean) => {
+        set((state) => ({ ...state, shouldCreateAccount: value }));
       },
       setHasHydrated: (value: boolean) => {
         set((state) => {
