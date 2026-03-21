@@ -1,7 +1,7 @@
 import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
-import { Alert, Modal, ScrollView, TouchableOpacity } from "react-native";
+import { Alert, Modal, TouchableOpacity, View } from "react-native";
 import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
 import { useEffect, useState } from "react";
@@ -13,7 +13,6 @@ import { useAuthStore } from "@/src/utils/authStore";
 import { UploadImage } from "@/interface";
 import { useForm } from "react-hook-form";
 import FoodRecordForm from "./FoodRecordForm";
-import { Button } from "@/components/ui/button";
 
 export default function FoodRecordPanel() {
   const [open, setOpen] = useState(false);
@@ -29,7 +28,7 @@ export default function FoodRecordPanel() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       food_id: null,
@@ -52,6 +51,22 @@ export default function FoodRecordPanel() {
     );
     console.log("res", res);
     setValue("food_name", res.food_name, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("nutrients.calories", res.nutrients.calories, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("nutrients.protein", res.nutrients.protein, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("nutrients.carbs", res.nutrients.carbs, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("nutrients.fat", res.nutrients.fat, {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -106,13 +121,10 @@ export default function FoodRecordPanel() {
   };
 
   return (
-    <HStack
-      space="md"
-      reversed={false}
-      className="bg-slate-400 w-full h-[90%] p-4 "
-    >
-      <VStack className="w-full h-[40%]">
-        <Box className="flex items-center justify-center p-2 h-[90%]">
+    <Box className="bg-slate-200 w-full p-4 rounded-3xl">
+      <VStack className="w-full">
+        {/* Image Box with fixed height (e.g., 200px) */}
+        <Box className="w-full h-48 rounded-2xl overflow-hidden bg-gray-300">
           <TouchableOpacity
             className="h-full w-full"
             onPress={() => setOpen(true)}
@@ -136,7 +148,9 @@ export default function FoodRecordPanel() {
             )}
           </TouchableOpacity>
         </Box>
-        <Box className="flex h-[100%] mt-3">
+
+        {/* Form Container with NO fixed height */}
+        <Box className="w-full mt-4">
           <FoodRecordForm
             control={control}
             errors={errors}
@@ -159,22 +173,21 @@ export default function FoodRecordPanel() {
           }}
           onPress={() => setOpen(false)}
         >
-          <TouchableOpacity
-            activeOpacity={1}
+          <View
             style={{
-              width: "100%",
+              width: "90%",
               height: 200,
               borderRadius: 40,
               backgroundColor: "white",
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
-              boxShadow: "0 2.5px 10px gray",
+              elevation: 5,
             }}
           >
             <TouchableOpacity
               style={{
-                width: 100,
+                width: 120,
                 height: 80,
                 borderRadius: 20,
                 backgroundColor: "#FF8383",
@@ -186,11 +199,11 @@ export default function FoodRecordPanel() {
                 router.push("/cameraFunction");
               }}
             >
-              <Text className="text-center">Use Camera</Text>
+              <Text className="text-white font-bold">Use Camera</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                width: 100,
+                width: 120,
                 height: 80,
                 borderRadius: 20,
                 backgroundColor: "#FF8383",
@@ -202,11 +215,11 @@ export default function FoodRecordPanel() {
                 setOpen(false);
               }}
             >
-              <Text className="text-center">Use from Gallery</Text>
+              <Text className="text-white font-bold">Use from Gallery</Text>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
         </TouchableOpacity>
       </Modal>
-    </HStack>
+    </Box>
   );
 }
