@@ -31,3 +31,16 @@ export interface FoodNutrients {
   protein: number;
   fat: number;
 }
+
+export interface FoodRecordRequest {
+  is_user_create: "1" | "0";
+  food_id: number | null;
+  new_food_name: string | null;
+  new_food_calories: number | null;
+  new_food_carb: number | null;
+  new_food_protein: number | null;
+  new_food_fat: number | null;
+  quantity: number;
+  eating_time: string;
+  image: UploadImage | null;
+}

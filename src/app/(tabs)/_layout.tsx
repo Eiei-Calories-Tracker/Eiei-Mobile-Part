@@ -65,7 +65,10 @@ export default function TabsLayout() {
               <View style={{ alignItems: "center", flex: 1 }}>
                 <TouchableOpacity
                   activeOpacity={1}
-                  onPress={() => setOpen(true)}
+                  onPress={() =>
+                    // setOpen(true)
+                    router.push("/createFoodRecord")
+                  }
                   style={style.CreateButton}
                 >
                   <Text style={{ color: "white", fontSize: 40 }}>+</Text>

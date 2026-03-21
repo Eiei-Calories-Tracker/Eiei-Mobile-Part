@@ -34,6 +34,7 @@ export default function FoodRecordForm({
   setCustomFood,
   isDisabledServing,
   setIsDisabledServing,
+  onSavePress,
 }: {
   control: Control<any>;
   errors: FieldErrors<any>;
@@ -47,11 +48,8 @@ export default function FoodRecordForm({
   setCustomFood: (customfood: FoodNutrients) => void;
   isDisabledServing: boolean;
   setIsDisabledServing: (isDisabledServing: boolean) => void;
+  onSavePress: (data: any) => void;
 }) {
-  const onSavePress = (data: any) => {
-    setisUserEditing(false);
-  };
-
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const foodName = useWatch({
@@ -127,42 +125,43 @@ export default function FoodRecordForm({
     if (selectedFood) {
       if (val == "-1") {
         setisUserEditing(true);
+        setIsDisabledServing(true);
         setValue("food_id", "-1");
         setValue("food_name", "");
         setValue("nutrients.calories", 0);
         setValue("nutrients.protein", 0);
         setValue("nutrients.carb", 0);
         setValue("nutrients.fat", 0);
-        setValue("quanity", 1);
+        setValue("quantity", 1);
       } else {
+        setIsDisabledServing(false);
         setValue("food_id", selectedFood.food_id?.toString());
         setValue("food_name", selectedFood.food_name);
         setValue("nutrients.calories", selectedFood.calories);
         setValue("nutrients.protein", selectedFood.protein);
         setValue("nutrients.carb", selectedFood.carb);
         setValue("nutrients.fat", selectedFood.fat);
-        setValue("quanity", 1);
+        setValue("quantity", 1);
       }
     }
   };
+  const handleCalculateCalories = () => {
+    const allCarbs = foodCarb * 4;
+    const allProtein = foodProtein * 4;
+    const allFat = foodFat * 9;
+    const allCalories = allCarbs + allProtein + allFat;
+    setValue("nutrients.calories", allCalories);
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const selectedFood =
-        foodId === "-1"
-          ? customfood
-          : foodNutrients.find((food) => food.food_id?.toString() === foodId);
+    if (isUserEditing) {
+      const timer = setTimeout(() => {
+        handleCalculateCalories();
+      }, 500);
 
-      if (selectedFood) {
-        setValue("nutrients.calories", selectedFood.calories * quantity);
-        setValue("nutrients.protein", selectedFood.protein * quantity);
-        setValue("nutrients.carb", selectedFood.carb * quantity);
-        setValue("nutrients.fat", selectedFood.fat * quantity);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [quantity, foodId, customfood, foodNutrients]);
+      return () => clearTimeout(timer);
+    }
+  }, [foodCarb, foodFat, foodProtein]);
 
   return (
     <Box className="w-full h-full p-2 gap-y-2">
@@ -253,37 +252,30 @@ export default function FoodRecordForm({
         <VStack className="flex-1 gap-y-2">
           <Text className="font-semibold text-gray-600">Calories</Text>
           {isUserEditing ? (
-            <FormControl>
-              <View className="flex flex-row items-center gap-x-2">
-                <Controller
-                  control={control}
-                  name="nutrients.calories"
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Input variant="outline" className="rounded-xl w-[50%] h-9">
-                      <InputField
-                        placeholder="0"
-                        keyboardType="numeric"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value?.toString()}
-                      />
-                    </Input>
-                  )}
-                />
-                <Text className="w-[20%] font-medium">kcal</Text>
-              </View>
-            </FormControl>
+            <View className="flex flex-row items-center gap-x-2 w-[100%] h-10">
+              <Text className="w-[50%]">
+                {(foodCalories * quantity).toFixed(1)}{" "}
+              </Text>
+              <Text className="w-[20%] font-medium"> kcal</Text>
+            </View>
           ) : (
             <View className="flex flex-row items-center gap-x-2 w-[100%] h-10">
-              <Text className="w-[50%]">{foodCalories} </Text>
+              <Text className="w-[50%]">
+                {(foodCalories * quantity).toFixed(1)}{" "}
+              </Text>
               <Text className="w-[20%] font-medium"> kcal</Text>
             </View>
           )}
         </VStack>
       </HStack>
       <HStack className="items-center gap-x-2 rounded-3xl  w-full h-24 mb-4">
-        {/* Nutrients Protein */}
-        <VStack className="flex p-2 gap-y-2 w-[33%] bg-[#D1D5DB] rounded-3xl">
+        <VStack
+          className={`flex p-2 gap-y-2 w-[33%] rounded-3xl ${
+            isUserEditing
+              ? "bg-transparent border border-[#D1D5DB]"
+              : "bg-[#D1D5DB]"
+          }`}
+        >
           <HStack className="w-[100%] content-center items-center gap-x-2">
             <FoodIcon width={30} height={30} />
             <Text className="font-semibold text-gray-600">Protein</Text>
@@ -314,13 +306,20 @@ export default function FoodRecordForm({
             </FormControl>
           ) : (
             <View className="flex flex-row items-center gap-x-2 w-[100%] h-10">
-              <Text className="w-[50%] text-center">{foodProtein} </Text>
+              <Text className="w-[50%] text-center">
+                {(foodProtein * quantity).toFixed(1)}{" "}
+              </Text>
               <Text className="w-[50%] font-medium"> g.</Text>
             </View>
           )}
         </VStack>
-        {/* Nutrients Fat */}
-        <VStack className="flex p-2 gap-y-2 w-[33%] bg-[#D1D5DB] rounded-3xl">
+        <VStack
+          className={`flex p-2 gap-y-2 w-[33%] rounded-3xl ${
+            isUserEditing
+              ? "bg-transparent border border-[#D1D5DB]"
+              : "bg-[#D1D5DB]"
+          }`}
+        >
           <HStack className="w-[100%] content-center items-center gap-x-2">
             <BoxIcon width={30} height={30} />
             <Text className="font-semibold text-gray-600 text-end">Fat</Text>
@@ -351,13 +350,20 @@ export default function FoodRecordForm({
             </FormControl>
           ) : (
             <View className="flex flex-row items-center gap-x-2 w-[100%] h-10">
-              <Text className="w-[50%] text-center">{foodFat} </Text>
+              <Text className="w-[50%] text-center">
+                {(foodFat * quantity).toFixed(1)}{" "}
+              </Text>
               <Text className="w-[50%] font-medium"> g.</Text>
             </View>
           )}
         </VStack>
-        {/* Nutrients Carbs */}
-        <VStack className="flex p-2 gap-y-2 w-[33%] bg-[#D1D5DB] rounded-3xl">
+        <VStack
+          className={`flex p-2 gap-y-2 w-[33%] rounded-3xl ${
+            isUserEditing
+              ? "bg-transparent border border-[#D1D5DB]  "
+              : "bg-[#D1D5DB]"
+          }`}
+        >
           <HStack className="w-[100%] content-center items-center gap-x-2">
             <LeafIcon width={30} height={30} />
             <Text className="font-semibold text-gray-600">Carbs</Text>
@@ -388,7 +394,9 @@ export default function FoodRecordForm({
             </FormControl>
           ) : (
             <View className="flex flex-row items-center gap-x-2 w-[100%] h-10">
-              <Text className="w-[50%] text-center">{foodCarb} </Text>
+              <Text className="w-[50%] text-center">
+                {(foodCarb * quantity).toFixed(1)}{" "}
+              </Text>
               <Text className="w-[50%] font-medium"> g.</Text>
             </View>
           )}
@@ -449,10 +457,15 @@ export default function FoodRecordForm({
       )}
 
       <Button
-        className="w-[90%] mx-auto bg-transparent border border-[#68BA86] h-14 rounded-2xl active:bg-[#68BA86] mt-4 mb-5"
+        className="w-[90%] mx-auto bg-transparent border text-[#68BA86] border-[#68BA86] h-14 rounded-2xl active:bg-[#68BA86] disabled:bg-gray-300 disabled:border-gray-300 mt-4 mb-5 disabled:text-gray-500"
         size="lg"
+        onPress={handleSubmit(onSavePress)}
+        disabled={foodCalories == 0 || isUserEditing}
       >
-        <ButtonText className="text-[#68BA86] font-bold">
+        <ButtonText
+          className="font-bold text-[#68BA86] disabled:text-gray-500"
+          disabled={foodCalories == 0 || isUserEditing}
+        >
           Save Food Record
         </ButtonText>
       </Button>
