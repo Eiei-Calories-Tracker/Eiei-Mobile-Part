@@ -15,7 +15,6 @@ import {
 
 import { CalendarModal } from "./components/CalendarModal";
 
-import { ACCOUNT_API } from "@/src/services/accountService";
 import { FOODRECORD_API } from "@/src/services/foodrecordService";
 import BoxIcon from "../components/BoxIcon";
 import FoodIcon from "../components/FoodIcon";
@@ -107,19 +106,6 @@ export default function IndexScreen() {
     onSubmit(new Date());
   }, [userId]);
 
-  useEffect(() => {
-    if (!accessToken || userData) return;
-    const fetchProfile = async () => {
-      try {
-        const data = await ACCOUNT_API.getProfile(accessToken);
-        setUserData(data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchProfile();
-  }, [accessToken]);
   useEffect(() => {
     if (weekData.length === 0) return;
     if (!userId) return;

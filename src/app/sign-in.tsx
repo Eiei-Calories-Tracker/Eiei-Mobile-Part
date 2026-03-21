@@ -15,8 +15,8 @@ import {
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
-  MailIcon,
   LockIcon,
+  MailIcon,
 } from "@/components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import {
@@ -26,8 +26,6 @@ import {
   useToast,
 } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { USER_API } from "../services/userService";
-import { useAuthStore } from "../utils/authStore";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -40,9 +38,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { ACCOUNT_API } from "../services/accountService";
+import { USER_API } from "../services/userService";
+import { useAuthStore } from "../utils/authStore";
 
 export default function SignInScreen() {
-  const { logIn, setShouldCreateAccount } = useAuthStore();
+  const { logIn, setShouldCreateAccount, setUserData } = useAuthStore();
   const router = useRouter();
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
@@ -69,6 +70,8 @@ export default function SignInScreen() {
       if (result && result.access_token) {
         logIn(result.access_token, result.user_id);
         // Navigation is handled by RootLayout based on isLoggedIn
+        const data = await ACCOUNT_API.getProfile(result.access_token);
+        setUserData(data.data);
       } else {
         showErrorToast();
       }

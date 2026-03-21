@@ -59,6 +59,7 @@ export const useAuthStore = create(
             isLoggedIn: false,
             accessToken: null,
             userId: null,
+            userData: null,
           };
         });
       },
