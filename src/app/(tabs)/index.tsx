@@ -15,6 +15,7 @@ import {
 
 import { CalendarModal } from "./components/CalendarModal";
 
+import { ACCOUNT_API } from "@/src/services/accountService";
 import { FOODRECORD_API } from "@/src/services/foodrecordService";
 import BoxIcon from "../components/BoxIcon";
 import FoodIcon from "../components/FoodIcon";
@@ -75,7 +76,7 @@ export default function IndexScreen() {
     const res = USER_API.getUserById(1);
     console.log(res);
   }, []);
-  const { userId, accessToken } = useAuthStore();
+  const { userId, accessToken, setUserData, userData } = useAuthStore();
   // console.log("userId", userId, accessToken);
   const [loading, setLoading] = useState<boolean>(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -106,6 +107,19 @@ export default function IndexScreen() {
     onSubmit(new Date());
   }, [userId]);
 
+  useEffect(() => {
+    if (!accessToken || userData) return;
+    const fetchProfile = async () => {
+      try {
+        const data = await ACCOUNT_API.getProfile(accessToken);
+        setUserData(data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchProfile();
+  }, [accessToken]);
   useEffect(() => {
     if (weekData.length === 0) return;
     if (!userId) return;
@@ -143,7 +157,9 @@ export default function IndexScreen() {
         >
           <View>
             {/* Change Name */}
-            <Text style={style.bold}>Welcome, Tienyuop</Text>
+            <Text style={style.bold}>
+              Welcome, {userData?.first_name ?? ""}
+            </Text>
             {/* Change Date */}
             <Text style={style.weak}>
               {weekData.length > 0

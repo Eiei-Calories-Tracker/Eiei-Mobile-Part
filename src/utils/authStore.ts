@@ -5,6 +5,18 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 const isWeb = Platform.OS === "web";
 
+type UserData = {
+  activity_factor: string;
+  birth_date: string;
+  email: string;
+  first_name: string;
+  gender: string;
+  height: number;
+  last_name: string;
+  target: string;
+  weight: number;
+};
+
 type UserState = {
   isLoggedIn: boolean;
   accessToken: string | null;
@@ -12,10 +24,12 @@ type UserState = {
   shouldCreateAccount: boolean;
   hasCompletedOnboarding: boolean;
   _hasHydrated: boolean;
+  userData: UserData | null;
   logIn: (token: string, userId: string) => void;
   logOut: () => void;
   setShouldCreateAccount: (value: boolean) => void;
   setHasHydrated: (value: boolean) => void;
+  setUserData: (data: UserData) => void;
 };
 
 export const useAuthStore = create(
@@ -24,6 +38,7 @@ export const useAuthStore = create(
       isLoggedIn: false,
       accessToken: null,
       userId: null,
+      userData: null,
       shouldCreateAccount: false,
       hasCompletedOnboarding: false,
       _hasHydrated: false,
@@ -46,6 +61,12 @@ export const useAuthStore = create(
             userId: null,
           };
         });
+      },
+      setUserData: (data: UserData) => {
+        set((state) => ({
+          ...state,
+          userData: data,
+        }));
       },
       setShouldCreateAccount: (value: boolean) => {
         set((state) => ({ ...state, shouldCreateAccount: value }));
