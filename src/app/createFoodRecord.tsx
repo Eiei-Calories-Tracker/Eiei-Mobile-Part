@@ -10,6 +10,7 @@ export default function CreateFoodRecordScreen() {
       className="flex-1 bg-white"
     >
       <View className="flex-1">
+        <FoodRecordHeader />
         <ScrollView
           className="flex-1"
           contentContainerStyle={{
@@ -19,7 +20,6 @@ export default function CreateFoodRecordScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View className="gap-y-5 p-4">
-            <FoodRecordHeader />
             <FoodRecordPanel />
           </View>
         </ScrollView>

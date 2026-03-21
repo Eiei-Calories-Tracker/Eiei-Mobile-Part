@@ -6,7 +6,7 @@ import { TouchableOpacity, View } from "react-native";
 export default function FoodRecordHeader() {
   const router = useRouter();
   return (
-    <View className="h-[10%] w-full flex-row bg-slate-400 content-center items-center">
+    <View className="h-[10%] w-full flex-row content-center items-center">
       <TouchableOpacity onPress={() => router.push("/(tabs)")}>
         <Icon
           as={ChevronLeftIcon}

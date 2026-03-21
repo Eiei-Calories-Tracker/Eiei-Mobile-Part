@@ -13,6 +13,7 @@ import { useAuthStore } from "@/src/utils/authStore";
 import { UploadImage } from "@/interface";
 import { useForm } from "react-hook-form";
 import FoodRecordForm from "./FoodRecordForm";
+import { FoodNutrients } from "@/interface";
 
 export default function FoodRecordPanel() {
   const [open, setOpen] = useState(false);
@@ -21,7 +22,17 @@ export default function FoodRecordPanel() {
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<UploadImage | null>(null);
   const { accessToken } = useAuthStore();
-  const [isUserEditing, setisUserEditing] = useState(false);
+  const [isUserEditing, setisUserEditing] = useState<boolean>(true);
+  const [foodNutrients, setFoodNutrients] = useState<FoodNutrients[]>([]);
+  const [isDisabledServing, setIsDisabledServing] = useState(true);
+  const [customfood, setCustomFood] = useState<FoodNutrients>({
+    food_id: null,
+    food_name: "",
+    calories: 0,
+    protein: 0,
+    carb: 0,
+    fat: 0,
+  });
 
   const {
     control,
@@ -31,14 +42,14 @@ export default function FoodRecordPanel() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      food_id: null,
-      quanity: 1,
-      eating_time: null,
+      food_id: "-1",
+      quantity: 1,
       food_name: "",
+      eating_time: new Date(),
       nutrients: {
         calories: 0,
         protein: 0,
-        carbs: 0,
+        carb: 0,
         fat: 0,
       },
     },
@@ -49,7 +60,15 @@ export default function FoodRecordPanel() {
       { file: imageFile },
       accessToken!,
     );
-    console.log("res", res);
+
+    setCustomFood({
+      food_id: -1,
+      food_name: "",
+      calories: 0,
+      protein: 0,
+      carb: 0,
+      fat: 0,
+    });
     setValue("food_name", res.food_name, {
       shouldDirty: true,
       shouldValidate: true,
@@ -62,7 +81,7 @@ export default function FoodRecordPanel() {
       shouldDirty: true,
       shouldValidate: true,
     });
-    setValue("nutrients.carbs", res.nutrients.carbs, {
+    setValue("nutrients.carb", res.nutrients.carb, {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -70,7 +89,37 @@ export default function FoodRecordPanel() {
       shouldDirty: true,
       shouldValidate: true,
     });
+    setValue("food_id", res.food_id ? res.food_id.toString() : "-1", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("quantity", 1, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    if (res.food_id) {
+      setIsDisabledServing(false);
+      setisUserEditing(false);
+    }
   }
+
+  useEffect(() => {
+    const handleFetchFoodNutrients = async () => {
+      const res = await FOODRECORD_API.getFoodNutrients(accessToken!);
+      setFoodNutrients([
+        ...res.all_food_nutrients,
+        {
+          food_id: -1,
+          food_name: "Custom Food",
+          calories: 0,
+          protein: 0,
+          carb: 0,
+          fat: 0,
+        },
+      ]);
+    };
+    handleFetchFoodNutrients();
+  }, []);
 
   useEffect(() => {
     if (capturedImage) {
@@ -121,10 +170,10 @@ export default function FoodRecordPanel() {
   };
 
   return (
-    <Box className="bg-slate-200 w-full p-4 rounded-3xl">
+    <Box className="w-full p-4 rounded-3xl">
       <VStack className="w-full">
         {/* Image Box with fixed height (e.g., 200px) */}
-        <Box className="w-full h-48 rounded-2xl overflow-hidden bg-gray-300">
+        <Box className="w-full h-48 rounded-2xl   ">
           <TouchableOpacity
             className="h-full w-full"
             onPress={() => setOpen(true)}
@@ -159,6 +208,11 @@ export default function FoodRecordPanel() {
             setisUserEditing={setisUserEditing}
             setValue={setValue}
             handleSubmit={handleSubmit}
+            foodNutrients={foodNutrients}
+            customfood={customfood}
+            setCustomFood={setCustomFood}
+            isDisabledServing={isDisabledServing}
+            setIsDisabledServing={setIsDisabledServing}
           />
         </Box>
       </VStack>
