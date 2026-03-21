@@ -15,7 +15,11 @@ export const FoodItem = ({ item }: props) => {
     >
       <View style={{ flexDirection: "row" }}>
         <Image
-          source={{ uri: item.image_key }}
+          source={
+            item.image_key
+              ? { uri: item.image_key }
+              : require("../../../../assets/images/default_food.png")
+          }
           style={{ width: 50, height: 50, borderRadius: 10 }}
         />
         <View style={{ marginLeft: 10 }}>
