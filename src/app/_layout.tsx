@@ -53,6 +53,10 @@ export default function RootLayout() {
                 name="cameraFunction"
                 options={{ headerShown: false }}
               />
+              <Stack.Screen
+                name="foodRecords/[id]"
+                options={{ headerShown: false }}
+              />
             </Stack.Protected>
             <Stack.Protected guard={!isLoggedIn}>
               {/*  && hasCompletedOnboarding */}

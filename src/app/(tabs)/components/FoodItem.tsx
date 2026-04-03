@@ -3,7 +3,7 @@ import { FoodRecordType } from "..";
 type props = {
   item: FoodRecordType;
 };
-export const FoodItem = ({ item }: props) => {
+export default function FoodItem({ item }: props) {
   return (
     <View
       style={{
@@ -47,4 +47,4 @@ export const FoodItem = ({ item }: props) => {
       </View>
     </View>
   );
-};
+}

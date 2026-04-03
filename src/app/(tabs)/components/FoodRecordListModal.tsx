@@ -1,6 +1,7 @@
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { FoodRecordType } from "..";
-import { FoodItem } from "./FoodItem";
+import FoodItem from "./FoodItem";
+import { useRouter } from "expo-router";
 
 type props = {
   visible: boolean;
@@ -8,7 +9,9 @@ type props = {
   foodList: FoodRecordType[];
 };
 export const FoodRecordListModal = ({ visible, onClose, foodList }: props) => {
+  const router = useRouter();
   return (
+    //
     <Modal visible={visible} transparent animationType="fade">
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <TouchableOpacity
@@ -49,7 +52,18 @@ export const FoodRecordListModal = ({ visible, onClose, foodList }: props) => {
             </View>
 
             {foodList.map((item, index) => (
-              <FoodItem item={item} key={index} />
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  router.push({
+                    pathname: "/foodRecords/[id]",
+                    params: { id: item.id },
+                  });
+                  onClose();
+                }}
+              >
+                <FoodItem item={item} />
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
