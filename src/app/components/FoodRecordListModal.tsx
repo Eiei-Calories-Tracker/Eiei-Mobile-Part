@@ -1,5 +1,5 @@
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { FoodRecordType } from "..";
+import { FoodRecordType } from "@/interface";
 import FoodItem from "./FoodItem";
 import { useRouter } from "expo-router";
 

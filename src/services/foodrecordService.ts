@@ -2,6 +2,8 @@ import {
   FoodNameRequest,
   FoodNameResponse,
   FoodNutrientsResponse,
+  FoodRecordDetail,
+  FoodRecordPatchRequest,
   FoodRecordRequest,
 } from "@/interface";
 
@@ -110,16 +112,93 @@ export const FOODRECORD_API = {
       throw err;
     }
   },
-  fetchTargetDateFoodRecord: async (date: Date, userId: string) => {
+  fetchTargetDateFoodRecord: async (
+    date: Date,
+    userId: string,
+    accessToken: string,
+  ) => {
     try {
       const stringDate = date.toLocaleDateString("en-CA");
       const res = await fetch(
-        `${BASE_URL}/api/v1/foodrecord/${userId}/${stringDate}`,
+        `${BASE_URL}/api/v1/food_record/${userId}/${stringDate}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
       );
 
-      return await res.json();
+      if (!res.ok) {
+        throw new Error("Failed to get food record");
+      }
+      const response = await res.json();
+
+      return response;
     } catch (err) {
       console.log(err);
+      throw err;
+    }
+  },
+  getFoodRecordById: async (
+    foodRecordId: string,
+    accessToken: string,
+  ): Promise<FoodRecordDetail> => {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/v1/food_record/${foodRecordId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to get food record");
+      }
+      const response = await res.json();
+
+      return response;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  },
+
+  patchFoodRecord: async (
+    foodRecordId: string,
+    foodRecord: FoodRecordPatchRequest,
+    accessToken: string,
+  ): Promise<any> => {
+    try {
+      const formData = new FormData();
+      if (foodRecord.quantity !== null) {
+        formData.append("quantity", foodRecord.quantity.toString());
+      }
+      if (foodRecord.eating_time !== null) {
+        formData.append("eating_time", foodRecord.eating_time);
+      }
+      const res = await fetch(
+        `${BASE_URL}/api/v1/food_record/${foodRecordId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to patch food record");
+      }
+      const response = await res.json();
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      throw err;
     }
   },
 };

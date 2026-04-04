@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
-import { FoodRecordType } from "..";
 import FoodItem from "./FoodItem";
 import { FoodRecordListModal } from "./FoodRecordListModal";
+import { FoodRecordType } from "@/interface";
 type props = {
   loading: boolean;
   foodList: FoodRecordType[];

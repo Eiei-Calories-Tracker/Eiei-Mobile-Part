@@ -20,6 +20,8 @@ import BoxIcon from "../app/components/BoxIcon";
 import LeafIcon from "../app/components/LeafIcon";
 import { CustomSelect } from "./CustomSelect";
 import { FoodNutrients } from "@/interface";
+import { FoodRecordStatus } from "../constants";
+import { FOODRECORD_API } from "../services/foodrecordService";
 
 export default function FoodRecordForm({
   control,
@@ -30,10 +32,17 @@ export default function FoodRecordForm({
   setValue,
   setisUserEditing,
   foodNutrients,
-  customfood,
-  setCustomFood,
-  isDisabledServing,
-  setIsDisabledServing,
+  customfood = {
+    food_id: null,
+    food_name: "",
+    calories: 0,
+    protein: 0,
+    carb: 0,
+    fat: 0,
+  },
+  FoodRecordState = FoodRecordStatus.CREATE,
+  setCustomFood = () => {},
+
   onSavePress,
   setError,
 }: {
@@ -45,10 +54,9 @@ export default function FoodRecordForm({
   setValue: any;
   setisUserEditing: (isUserEditing: boolean) => void;
   foodNutrients: FoodNutrients[];
-  customfood: FoodNutrients;
-  setCustomFood: (customfood: FoodNutrients) => void;
-  isDisabledServing: boolean;
-  setIsDisabledServing: (isDisabledServing: boolean) => void;
+  customfood?: FoodNutrients;
+  setCustomFood?: (customfood: FoodNutrients) => void;
+  FoodRecordState: FoodRecordStatus;
   onSavePress: (data: any) => void;
   setError: any;
 }) {
@@ -99,7 +107,7 @@ export default function FoodRecordForm({
       setValue("nutrients.protein", customfood.protein);
       setValue("nutrients.carb", customfood.carb);
       setValue("nutrients.fat", customfood.fat);
-      setIsDisabledServing(true);
+
       setisUserEditing(true);
     } else {
       //finish editing
@@ -118,13 +126,12 @@ export default function FoodRecordForm({
         carb: foodCarb,
         fat: foodFat,
       });
-      setIsDisabledServing(false);
+
       setisUserEditing(false);
     }
   };
 
   const handleSelect = (val: string) => {
-    setIsDisabledServing(false);
     const selectedFood = foodNutrients.find(
       (f: FoodNutrients) => f.food_id?.toString() === val,
     );
@@ -133,7 +140,6 @@ export default function FoodRecordForm({
     if (selectedFood) {
       if (val == "-1") {
         setisUserEditing(true);
-        setIsDisabledServing(true);
         setValue("food_id", "-1");
         setValue("food_name", "");
         setValue("nutrients.calories", 0);
@@ -142,7 +148,6 @@ export default function FoodRecordForm({
         setValue("nutrients.fat", 0);
         setValue("quantity", 1);
       } else {
-        setIsDisabledServing(false);
         setValue("food_id", selectedFood.food_id?.toString());
         setValue("food_name", selectedFood.food_name);
         setValue("nutrients.calories", selectedFood.calories);
@@ -173,20 +178,22 @@ export default function FoodRecordForm({
 
   return (
     <Box className="w-full h-full p-2 gap-y-2">
-      <View className="w-full h-16 p-2 gap-y-2">
-        <CustomSelect
-          label="Select food"
-          placeholder="Select food recognized"
-          options={foodNutrients.map((food: FoodNutrients) => ({
-            label: food.food_name,
-            value: food.food_id?.toString() || "",
-          }))}
-          value={foodId ? foodId.toString() : ""}
-          onChange={(val) => {
-            handleSelect(val);
-          }}
-        />
-      </View>
+      {FoodRecordState == FoodRecordStatus.CREATE && (
+        <View className="w-full h-16 p-2 gap-y-2">
+          <CustomSelect
+            label="Select food"
+            placeholder="Select food recognized"
+            options={foodNutrients.map((food: FoodNutrients) => ({
+              label: food.food_name,
+              value: food.food_id?.toString() || "",
+            }))}
+            value={foodId ? foodId.toString() : ""}
+            onChange={(val) => {
+              handleSelect(val);
+            }}
+          />
+        </View>
+      )}
       {/* Food Name Section */}
       {isUserEditing ? (
         <FormControl
@@ -241,7 +248,7 @@ export default function FoodRecordForm({
               <Input
                 variant="outline"
                 className="rounded-xl w-[30%] h-10"
-                isDisabled={isDisabledServing}
+                isDisabled={isUserEditing}
               >
                 <InputField
                   placeholder="1"
@@ -480,7 +487,9 @@ export default function FoodRecordForm({
           className="font-bold text-[#68BA86] disabled:text-gray-500"
           disabled={foodCalories == 0 || isUserEditing}
         >
-          Save Food Record
+          {FoodRecordState == FoodRecordStatus.EDIT
+            ? "Update Food Record"
+            : "Save Food Record"}
         </ButtonText>
       </Button>
     </Box>

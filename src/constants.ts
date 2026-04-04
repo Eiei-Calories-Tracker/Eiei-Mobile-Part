@@ -14,3 +14,8 @@ export enum Target {
   MAINTAIN_WEIGHT = "maintain_weight",
   GAIN_WEIGHT = "gain_weight",
 }
+
+export enum FoodRecordStatus {
+  CREATE = "create",
+  EDIT = "edit",
+}

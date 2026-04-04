@@ -12,7 +12,7 @@ import {
 
 export default function FoodRecordDetailScreen() {
   const { id: foodRecordId } = useLocalSearchParams<any>();
-  console.log(foodRecordId);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -29,7 +29,7 @@ export default function FoodRecordDetailScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View className="gap-y-5 p-4">
-            <FoodRecordDetailPanel />
+            <FoodRecordDetailPanel foodRecordId={foodRecordId} />
           </View>
         </ScrollView>
         <View className="absolute bottom-0 left-0 right-0 bg-white">

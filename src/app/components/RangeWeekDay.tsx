@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 
 import Svg, { Circle } from "react-native-svg";
-import { WeekNutritionType } from "..";
+import { WeekNutritionType } from "@/interface";
 
 type Props = {
   weekData: WeekNutritionType[];

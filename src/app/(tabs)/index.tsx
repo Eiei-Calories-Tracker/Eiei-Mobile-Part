@@ -13,42 +13,15 @@ import {
   View,
 } from "react-native";
 
-import { CalendarModal } from "./components/CalendarModal";
+import { CalendarModal } from "../components/CalendarModal";
 
 import { FOODRECORD_API } from "@/src/services/foodrecordService";
 import BoxIcon from "../components/BoxIcon";
 import FoodIcon from "../components/FoodIcon";
 import LeafIcon from "../components/LeafIcon";
-import { ListFoodRecord } from "./components/ListFoodRecord";
-import { RangeWeekDay } from "./components/RangeWeekDay";
-type NutritionType = {
-  calories: number;
-  carb: number;
-  fat: number;
-  protein: number;
-};
-export type FoodRecordType = {
-  food_name: string;
-  sum_fat: number;
-  sum_calories: number;
-  user_id: number;
-  image_key: string;
-  id: number;
-  sum_carb: number;
-  sum_protein: number;
-  quantity: number;
-  eating_time: string;
-};
-export type WeekNutritionType = {
-  cummulative_week_nutrients: NutritionType;
-  cummulative_current_day_nutrients: NutritionType;
-  target_week_nutrients: NutritionType;
-  target_current_day_nutrients: NutritionType;
-  current_date: string;
-  week_number: number;
-  day_state: number;
-  day: string;
-};
+import { ListFoodRecord } from "../components/ListFoodRecord";
+import { RangeWeekDay } from "../components/RangeWeekDay";
+import { FoodRecordType, NutritionType, WeekNutritionType } from "@/interface";
 
 const style = StyleSheet.create({
   bold: {
@@ -71,9 +44,6 @@ const style = StyleSheet.create({
   nutrient: { textAlign: "center", fontSize: 11, fontWeight: "bold" },
 });
 export default function IndexScreen() {
-  useEffect(() => {
-    const res = USER_API.getUserById(1);
-  }, []);
   const { userId, accessToken, setUserData, userData } = useAuthStore();
   // console.log("userId", userId, accessToken);
   const [loading, setLoading] = useState<boolean>(false);
@@ -96,7 +66,11 @@ export default function IndexScreen() {
   async function getFoodRecordDate(date: Date) {
     if (!userId) return;
     setLoading(true);
-    const res = await FOODRECORD_API.fetchTargetDateFoodRecord(date, userId);
+    const res = await FOODRECORD_API.fetchTargetDateFoodRecord(
+      date,
+      userId,
+      accessToken!,
+    );
     setFoodList(res);
     setLoading(false);
   }

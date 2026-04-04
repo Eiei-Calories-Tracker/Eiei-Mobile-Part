@@ -44,3 +44,42 @@ export interface FoodRecordRequest {
   eating_time: string;
   image: UploadImage | null;
 }
+
+export type NutritionType = {
+  calories: number;
+  carb: number;
+  fat: number;
+  protein: number;
+};
+export type FoodRecordType = {
+  food_name: string;
+  sum_fat: number;
+  sum_calories: number;
+  user_id: number;
+  image_key: string;
+  id: number;
+  sum_carb: number;
+  sum_protein: number;
+  quantity: number;
+  eating_time: string;
+};
+export type WeekNutritionType = {
+  cummulative_week_nutrients: NutritionType;
+  cummulative_current_day_nutrients: NutritionType;
+  target_week_nutrients: NutritionType;
+  target_current_day_nutrients: NutritionType;
+  current_date: string;
+  week_number: number;
+  day_state: number;
+  day: string;
+};
+
+export interface FoodRecordDetail {
+  food_record: FoodRecordType;
+  food_nutrient: FoodNutrients;
+}
+
+export interface FoodRecordPatchRequest {
+  quantity: number | null;
+  eating_time: string | null;
+}

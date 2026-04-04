@@ -20,6 +20,7 @@ import { UploadImage } from "@/interface";
 import { useForm } from "react-hook-form";
 import FoodRecordForm from "./FoodRecordForm";
 import { FoodNutrients } from "@/interface";
+import { FoodRecordStatus } from "../constants";
 
 export default function FoodRecordPanel() {
   const [open, setOpen] = useState(false);
@@ -251,11 +252,10 @@ export default function FoodRecordPanel() {
             setisUserEditing={setisUserEditing}
             setValue={setValue}
             handleSubmit={handleSubmit}
+            FoodRecordState={FoodRecordStatus.CREATE}
             foodNutrients={foodNutrients}
             customfood={customfood}
             setCustomFood={setCustomFood}
-            isDisabledServing={isDisabledServing}
-            setIsDisabledServing={setIsDisabledServing}
             onSavePress={onSavePress}
             setError={setError}
           />

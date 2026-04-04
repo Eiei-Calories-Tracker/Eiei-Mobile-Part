@@ -1,5 +1,5 @@
 import { Image, Text, View } from "react-native";
-import { FoodRecordType } from "..";
+import { FoodRecordType } from "@/interface";
 type props = {
   item: FoodRecordType;
 };
@@ -18,7 +18,7 @@ export default function FoodItem({ item }: props) {
           source={
             item.image_key
               ? { uri: item.image_key }
-              : require("../../../../assets/images/default_food.png")
+              : require("../../../assets/images/default_food.png")
           }
           style={{ width: 50, height: 50, borderRadius: 10 }}
         />
