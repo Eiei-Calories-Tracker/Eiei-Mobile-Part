@@ -1,6 +1,7 @@
 import { router, Tabs, usePathname } from "expo-router";
 import { useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Provider as PaperProvider } from "react-native-paper";
 import HomeIcon from "../components/HomeIcon";
 import UserIcon from "../components/UserIcon";
 
@@ -26,7 +27,7 @@ export default function TabsLayout() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   return (
-    <>
+    <PaperProvider>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -166,6 +167,6 @@ export default function TabsLayout() {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
-    </>
+    </PaperProvider>
   );
 }

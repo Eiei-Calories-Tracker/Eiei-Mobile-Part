@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 const isWeb = Platform.OS === "web";
 
-type UserData = {
+export type UserData = {
   activity_factor: string;
   birth_date: string;
   email: string;

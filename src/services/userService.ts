@@ -63,4 +63,31 @@ export const USER_API = {
       return null;
     }
   },
+
+  updateUserProfile: async (token: string, data: any) => {
+    try {
+      const res: any = await fetch(`${BASE_URL}/api/v1/users/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          first_name: data.first_name,
+          last_name: data.last_name,
+          email: data.email,
+          gender: data.gender,
+          activity_factor: data.activity_factor,
+          weight: data.weight,
+          height: data.height,
+          target: data.target,
+          birth_date: data.birth_date,
+        }),
+      });
+
+      return (await res.json()).data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 };
