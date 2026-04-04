@@ -57,6 +57,10 @@ export default function RootLayout() {
                 name="createFoodRecord"
                 options={{ headerShown: false }}
               />
+              <Stack.Screen
+                name="editProfile"
+                options={{ headerShown: false }}
+              />
             </Stack.Protected>
             <Stack.Protected guard={!isLoggedIn}>
               {/*  && hasCompletedOnboarding */}

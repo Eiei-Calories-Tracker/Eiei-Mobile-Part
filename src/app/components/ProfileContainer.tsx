@@ -4,12 +4,12 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 type props = {
@@ -65,7 +65,7 @@ export const ProfileContainer = ({ editState }: props) => {
     );
     console.log("res", res);
     setUserData(res);
-    router.push("/setting");
+    router.back();
   }
   const [currentUserData, setCurrentUserData] = useState<UserData>({
     email: "",
