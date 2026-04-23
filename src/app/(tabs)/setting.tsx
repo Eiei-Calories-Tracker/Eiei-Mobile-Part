@@ -40,7 +40,7 @@ export default function SettingsScreen() {
         <Text style={{ opacity: 0.3, fontWeight: 500, fontSize: 18 }}>
           General
         </Text>
-        <TouchableOpacity onPress={() => router.push("/editProfile")}>
+        <TouchableOpacity onPress={() => router.push("/EditProfile")}>
           <View
             style={{
               justifyContent: "space-between",
