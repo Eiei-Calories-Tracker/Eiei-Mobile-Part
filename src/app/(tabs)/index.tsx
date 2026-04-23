@@ -2,9 +2,8 @@ import { CalendarDaysIcon } from "@/components/ui/icon";
 import CircularProgress from "@/src/components/CircularProgress";
 import { formatDate, rangeFormatDate } from "@/src/services/dateService";
 import { NUTRIENT_API } from "@/src/services/nutritionService";
-import { USER_API } from "@/src/services/userService";
 import { useAuthStore } from "@/src/utils/authStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -15,13 +14,14 @@ import {
 
 import { CalendarModal } from "../components/CalendarModal";
 
+import { FoodRecordType, NutritionType, WeekNutritionType } from "@/interface";
 import { FOODRECORD_API } from "@/src/services/foodrecordService";
+import { useFocusEffect } from "expo-router";
 import BoxIcon from "../components/BoxIcon";
 import FoodIcon from "../components/FoodIcon";
 import LeafIcon from "../components/LeafIcon";
 import { ListFoodRecord } from "../components/ListFoodRecord";
 import { RangeWeekDay } from "../components/RangeWeekDay";
-import { FoodRecordType, NutritionType, WeekNutritionType } from "@/interface";
 
 const style = StyleSheet.create({
   bold: {
@@ -78,7 +78,13 @@ export default function IndexScreen() {
     if (!userId) return;
     onSubmit(new Date());
   }, [userId]);
-
+  useFocusEffect(
+    useCallback(() => {
+      onSubmit(new Date());
+      // getFoodRecordDate(new Date());
+      // alert(1);
+    }, [userId, accessToken]),
+  );
   useEffect(() => {
     if (weekData.length === 0) return;
     if (!userId) return;
